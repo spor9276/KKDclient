@@ -93,12 +93,13 @@ public class LoginView extends JFrame {
 						if(!temp.equals("")){
 							StringTokenizer s = new StringTokenizer(temp);
 							Command = s.nextToken("$");
-
+							String SubCommand = s.nextToken("\0");
 						}
 						else
 							Command = "X";
 						if(Command.equals("LOGINSUCCESS")){
-							//socket.close();
+							
+							
 							MainView mv = new MainView(id, is, os,dis, dos, socket);
 							setVisible(false);
 							return;

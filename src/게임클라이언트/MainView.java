@@ -31,6 +31,8 @@ public class MainView extends JFrame {
 	public static final String IP = "127.0.0.1";
 	public static final int PORT = 30000;
 	
+	private int Master_flag = 0;
+	
 	private String id;
 	private String password;
 	
@@ -47,6 +49,9 @@ public class MainView extends JFrame {
 	private ImageIcon suggestWordLabelImg = new ImageIcon("img/suggestWord.png");
 	private JLabel suggestWordLabel = new JLabel(suggestWordLabelImg);
 	JButton sendBtn; // 전송버튼
+	JButton startBtn;	//게임 시작 버튼
+	JButton readyBtn;	//게임 준비 버튼
+	
 	// JTextArea textArea; // 수신된 메세지를 나타낼 변수
 	JTextPane textArea; // 이모티콘이나 이미지 보여주기 위해서는 JtextPane을 사용한다.
 	
@@ -137,6 +142,7 @@ public class MainView extends JFrame {
 						String temp = msg;
 						String Command = null;
 						String chatMsg = null;
+						System.out.println(msg);
 						if(!temp.equals("")){
 							StringTokenizer s = new StringTokenizer(temp);
 							Command = s.nextToken("$");
@@ -147,10 +153,37 @@ public class MainView extends JFrame {
 						}
 						else
 							Command = "X";
-						if(Command.equals("CHAT")){
+						
+						
+						switch(Command){
+						case "CHAT":
 							append_Message(chatMsg + "\n");
 							System.out.println("채팅메시지 도착");
+							break;
+						case "MASTER":	//방장인지
+							append_Message("방장입니다.\n");
+							Master_flag = 1;
+							readyBtn.setVisible(false);
+							startBtn.setVisible(true);
+							startBtn.setEnabled(true);
+							break;
+						case "DISC":
+							append_Message(chatMsg + " 접속 종료\n");
+							break;
+						case "START":
+							append_Message("게임 시작!\n");
+							break;
+						case "READY":
+							append_Message("준비\n");
+							break;
+						case "CANCEL":
+							append_Message("취소\n");
+							break;
+						default:
+							break;
 						}
+						
+						
 					
 					} catch (IOException e) {
 						append_Message("메세지 수신 에러!!\n");
@@ -222,16 +255,36 @@ public class MainView extends JFrame {
 		sendBtn.setBounds(720, 620, 80, 30);
 		contentPane.add(sendBtn);
 		textArea.setEnabled(false); // 사용자가 수정못하게 막는다
+		
+		readyBtn = new JButton("게임준비");
+		readyBtn.setBounds(720,580, 100,30);
+		readyBtn.setEnabled(true);
+		contentPane.add(readyBtn);
+		
+		
+		startBtn = new JButton("게임시작");
+		startBtn.setBounds(720,580, 100,30);
+		startBtn.setEnabled(false);
+		startBtn.setVisible(false);
+		contentPane.add(startBtn);
+		
 		setVisible(true);
 	}
 	
 	public void start() { // 액션이벤트 지정 메소드
-		Myaction action = new Myaction();
+		sendAction action = new sendAction();
 		sendBtn.addActionListener(action); // 내부클래스로 액션 리스너를 상속받은 클래스로
 		textField.addActionListener(action);
+		
+		startAction startaction = new startAction();
+		startBtn.addActionListener(startaction);
+		
+		readyAction readyaction = new readyAction();
+		readyBtn.addActionListener(readyaction);
+		
 	}
 	
-	class Myaction implements ActionListener //채팅 내부클래스로 액션 이벤트 처리 클래스
+	class sendAction implements ActionListener //채팅 내부클래스로 액션 이벤트 처리 클래스
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -244,10 +297,34 @@ public class MainView extends JFrame {
 				send_Message(msg);
 				textField.setText(""); // 메세지를 보내고 나면 메세지 쓰는창을 비운다.
 				textField.requestFocus(); // 메세지를 보내고 커서를 다시 텍스트 필드로 위치시킨다
-				
 			}
-
 		}
-
+	}
+	class startAction implements ActionListener //채팅 내부클래스로 액션 이벤트 처리 클래스
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			send_Message(Protocol.GAMESTART + "");
+			System.out.println("게임시작버튼");
+			startBtn.setEnabled(false);
+		}
+	}
+	class readyAction implements ActionListener //채팅 내부클래스로 액션 이벤트 처리 클래스
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton jbutton = (JButton)e.getSource();
+			
+			if(jbutton.getText().equals("게임준비")){
+				send_Message(Protocol.GAMEREADY + "");
+				System.out.println("준비버튼");
+				jbutton.setText("준비취소");
+			}
+			else {
+				send_Message(Protocol.CANCEL_READY+"");
+				jbutton.setText("게임준비");
+				System.out.println("준비취소");
+			}
+		}
 	}
 }

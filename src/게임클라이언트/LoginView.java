@@ -1,6 +1,5 @@
 package °ÔÀÓÅ¬¶óÀÌ¾ðÆ®;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -24,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 
 public class LoginView extends JFrame {
 	private JPanel contentPane;
-	private JLabel title;
 	private JLabel idLabel;
 	private JTextField idField;
 	private JButton sendButton;
@@ -38,7 +36,7 @@ public class LoginView extends JFrame {
 	private  DataInputStream dis;
 	private  DataOutputStream dos;
 	
-	private ImageIcon backGround = new ImageIcon("img/ClientBackground2.jpg");
+	private ImageIcon backGround = new ImageIcon("img/LoginBackground2.jpg");
 	private Image backGroundImg = backGround.getImage();
 	
 	public LoginView(){
@@ -162,13 +160,6 @@ public class LoginView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		Font f1 = new Font("¸¼Àº °íµñ",Font.PLAIN,40);
-		
-		title = new JLabel("¿Â¶óÀÎ ÄôÄôµû!");
-		title.setBounds(300,100,300,50);
-		title.setFont(f1);
-		contentPane.add(title);
 		
 		idLabel = new JLabel("ID ");
 		idLabel.setBounds(350,550,50,30);

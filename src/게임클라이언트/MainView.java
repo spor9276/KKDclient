@@ -1,6 +1,8 @@
 package 게임클라이언트;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -50,6 +52,12 @@ public class MainView extends JFrame {
 	
 	// JTextArea textArea; // 수신된 메세지를 나타낼 변수
 	JTextPane textArea; // 이모티콘이나 이미지 보여주기 위해서는 JtextPane을 사용한다.
+
+	private ImageIcon suggestWordLabelImg = new ImageIcon("img/suggestWord.png");
+	private JLabel suggestWordLabel = new JLabel(suggestWordLabelImg);
+	
+	private ImageIcon gameBackGround = new ImageIcon("img/gameBackground.png");//
+	private Image gameBackGroundImg = gameBackGround.getImage();//
 
 	private ImageIcon userCharacter[] = {new ImageIcon("img/jayZ.png"), new ImageIcon("img/muzi.png"), new ImageIcon("img/neo.png"), new ImageIcon("img/prodo.png")};
 	private JLabel userImg[] = new JLabel[4];
@@ -210,11 +218,20 @@ public class MainView extends JFrame {
 	public void init() { // 화면구성 메소드
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, WIDTH, HEIGHT);
-		contentPane = new JPanel();
+		contentPane = new JPanel(){
+			public void paintComponent(Graphics g){
+				g.drawImage(gameBackGroundImg, 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		suggestWordLabel.setBounds(300, 50, 218, 57);
+		contentPane.add(suggestWordLabel);
 		
 		int userx = 30;
 		for(int i = 0; i < userImg.length; i++){
